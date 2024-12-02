@@ -3,38 +3,39 @@ function getRandomHexColor() {
     .toString(16)
     .padStart(6, 0)}`;
 }
-function createBoxes(amount) {
-  const boxesContainer = document.getElementById("boxes");
-  const boxElements = [];
 
-  for (let i = 0; i < amount; i++) {
-    const box = document.createElement("div");
-    const size = 30 + i * 10;
-    box.style.width = `${size}px`;
-    box.style.height = `${size}px`;
+const inputEl = document.querySelector("input");
+const boxesEl = document.querySelector("#boxes");
 
-    box.style.backgroundColor = getRandomHexColor();
-    box.style.margin = "5px";
-    boxElements.push(box);
+const createBtn = document.querySelector(`button[data-create]`);
+const destroyBtn = document.querySelector(`button[data-destroy]`);
+
+createBtn.addEventListener("click", handleCreate);
+
+function handleCreate() {
+  const numberDiv = +inputEl.value;
+  const minDiv = +inputEl.min;
+  const maxDiv = +inputEl.max;
+  let sizeDiv = 30;
+  if (numberDiv >= minDiv && numberDiv <= maxDiv) {
+    const listBoxes = [];
+    for (let i = 1; i <= numberDiv; i++) {
+      const divEl = document.createElement("div");
+      divEl.style.width = sizeDiv + "px";
+      divEl.style.height = sizeDiv + "px";
+      divEl.style.backgroundColor = getRandomHexColor();
+      sizeDiv += 10;
+      listBoxes.push(divEl);
+    }
+    boxesEl.append(...listBoxes);
   }
+  inputEl.value = "";
+}
 
-  boxesContainer.append(...boxElements);
-}
-function destroyBoxes() {
-  const boxesContainer = document.getElementById("boxes");
-  boxesContainer.innerHTML = "";
-}
-document.querySelector("[data-create]").addEventListener("click", () => {
-  const inputValue = document.querySelector("input").value;
-  const amount = Number(inputValue);
-  if (amount >= 1 && amount <= 100) {
-    createBoxes(amount);
-    document.querySelector("input").value = "";
-  } else {
-    alert("Please enter a number between 1 and 100.");
-  }
+destroyBtn.addEventListener("click", () => {
+  boxesEl.innerHTML = "";
 });
 
-document
-  .querySelector("[data-destroy]")
-  .addEventListener("click", destroyBoxes);
+inputEl.classList.add("input-boxes");
+createBtn.classList.add("btn", "btn-blue", "btn-create");
+destroyBtn.classList.add("btn", "btn-red", "btn-create");
